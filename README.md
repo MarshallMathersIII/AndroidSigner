@@ -1,4 +1,3 @@
-
 **转载请标注原创地址：[https://blog.csdn.net/lsyz0021/article/details/96499543](https://blog.csdn.net/lsyz0021/article/details/96499543)**
 
 [GitHub地址 https://github.com/lsyz0021/androidSigner](https://github.com/lsyz0021/androidSigner)
@@ -84,8 +83,36 @@ outPath=./out
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20190721185914724.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xzeXowMDIx,size_16,color_FFFFFF,t_70)
 [GitHub地址 https://github.com/lsyz0021/androidSigner](https://github.com/lsyz0021/androidSigner)
 
+## 8、新增v1、v2签名校验
 
+```shell
+                echo V2签名成功:$signerApk
+                echo -e "---------------签名验证提示开始----------------\n"
+                #echo -e `apksigner verify -v $signerApk`
+                result=$(echo `apksigner verify -v $signerApk`)
+                signVerifyStr="Verifies Verified using v1 scheme (JAR signing): true Verified using v2 scheme (APK Signature Scheme v2): true"
+                echo $result
+                echo -e "---------------签名验证提示结束----------------\n"
+                if [[ $result == *$signVerifyStr* ]]
+                    then
+                        echo "v1、v2 签名验证成功"
+                    else
+                        echo "v1、v2 签名验证失败"
+                    fi
+            
+```
 
+## 9、注意
+
+使用时需注意`signerConfig.ini`配置文件中的build-tools版本号，需要与环境变量一致，否则验证签名时会有如下报错
+
+```shell
+DOES NOT VERIFY
+ERROR: APK Signature Scheme v2 signer #1: Malformed additional attribute #1
+WARNING: APK Signature Scheme v2 signer #1: Unknown signature algorithm: 0x421
+```
+
+环境变量地址（Mac）： export AAPT_HOME=/Users/xxxx/Library/Android/sdk/build-tools/25.0.2 
 
 
 

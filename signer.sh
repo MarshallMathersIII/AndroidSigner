@@ -11,8 +11,8 @@ auto="no" # 是否自动搜索
 repeatSigner="false" # 是否重复签名，，已完成签名的apk名字上会加个“signer”，true：会再签名，false：不会再签名
 searchKey="*.apk"
 configSearchPath="" # 指定搜索的目录，不指定默认问当前目录
-configOutPath="" # 指定签名完的apk输出目录，不指定默认为当前目录下的out目录
-sourceApkPath="" 
+configOutPath="" #
+sourceApkPath=""
 
 tatalTimes=0 # 总的签名次数
 errorTimes=0 # 失败的签名次数
@@ -168,6 +168,7 @@ function signAndroidApk()
         fi
 
         zipalignApk="$outputPath/zipalign-$apkName"
+        
         signerApk="$outputPath/signer-$apkName" 
 
         # 开始4K对齐
@@ -196,7 +197,19 @@ function signAndroidApk()
                 let errorTimes++
                 rm -f $signerApk
             else
-                echo V2签名成功:$signerApk                    
+                echo V2签名成功:$signerApk
+                echo -e "---------------签名验证提示开始----------------\n"
+                #echo -e `apksigner verify -v $signerApk`
+                result=$(echo `apksigner verify -v $signerApk`)
+                signVerifyStr="Verifies Verified using v1 scheme (JAR signing): true Verified using v2 scheme (APK Signature Scheme v2): true"
+                echo $result
+                echo -e "---------------签名验证提示结束----------------\n"
+                if [[ $result == *$signVerifyStr* ]]
+                    then
+                        echo "v1、v2 签名验证成功"
+                    else
+                        echo "v1、v2 签名验证失败"
+                    fi
             fi
         fi
     fi
